@@ -1,8 +1,10 @@
 # snek
-Learning Godot 4 with a simple Snake clone.
+Learning Godot 4 by making/modding a simple Snake clone.
 
 ## TODO
-* [ ] - Mod game by merging parts.
+* [ ] - Mod: Merging parts.
+* [ ] - Mod: Multiple stages.
 
 ## Sources
-* https://www.youtube.com/playlist?list=PLiJ2loFXqTO1_raZB5MhIYLtqdvT5CdSP
+* Tutorial: https://www.youtube.com/playlist?list=PLiJ2loFXqTO1_raZB5MhIYLtqdvT5CdSP
+* Assets: https://devilsworkshop.itch.io/

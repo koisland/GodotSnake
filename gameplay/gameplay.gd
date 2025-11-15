@@ -2,6 +2,7 @@ class_name Gameplay extends Node2D
 
 # Access as unique name, so don't break references if moved around
 @onready var head: Head = %Head
+@onready var bounds: Bounds = %Bounds
 
 
 var time_between_moves: float = 1000.0
@@ -16,7 +17,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# (x, y)
 	# y goes positively in down direction
 	# Remember to map WASD via Project > Project Settings > Input Map > ui_*
@@ -42,4 +43,5 @@ func _physics_process(delta: float) -> void:
 
 func update_snake():
 	var new_position: Vector2 = head.position + move_dir * Global.GRID_SIZE
+	new_position = bounds.wrap_vector(new_position)
 	head.move_to(new_position)
