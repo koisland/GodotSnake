@@ -3,17 +3,20 @@ class_name Gameplay extends Node2D
 # Access as unique name, so don't break references if moved around
 @onready var head: Head = %Head
 @onready var bounds: Bounds = %Bounds
+@onready var spawner: Spawner = $Spawner
 
 
 var time_between_moves: float = 1000.0
 var time_since_last_move: float = 0.0
-var speed: float = 1000.0
+var speed: float = 10000.0
 var move_dir: Vector2 = Vector2.RIGHT
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	head.food_eaten.connect(_on_food_eaten)
+	# First food.
+	spawner.spawn_food()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -45,3 +48,13 @@ func update_snake():
 	var new_position: Vector2 = head.position + move_dir * Global.GRID_SIZE
 	new_position = bounds.wrap_vector(new_position)
 	head.move_to(new_position)
+
+func _on_food_eaten():
+	# spawn food.
+	spawner.call_deferred("spawn_food")
+	# add tail
+	
+	# increase speed
+	
+	# keep score
+	
