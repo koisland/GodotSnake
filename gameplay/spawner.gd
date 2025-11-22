@@ -5,6 +5,8 @@ class_name Spawner extends Node2D
 signal tail_added(tail: Tail)
 # export vars
 @export var bounds: Bounds
+@onready var body: Body = %Body
+
 # instantiating packed scenes. Ctrl + drag
 var food_scene: PackedScene = preload("uid://cmq75dsob6cji")
 var tail_scene: PackedScene = preload("uid://hqol4cjsy268")
@@ -12,16 +14,22 @@ var tail_scene: PackedScene = preload("uid://hqol4cjsy268")
 
 func spawn_food():
 	# Where do we spawn? (position)
-	var spawn_point: Vector2 = Vector2.ZERO
-	# TODO: Create a lazy set of possible points and instead of randomly creating
-	# positions, pull from the bag of possible points.
-	# TODO: Intersect snake parts with above to avoid spawning food on self
-	# Spawn within x range - 1 grid to avoid being at edge of screen.
-	spawn_point.x = randf_range(bounds.x_min + Global.GRID_SIZE, bounds.x_max - Global.GRID_SIZE)
-	spawn_point.y = randf_range(bounds.y_min + Global.GRID_SIZE, bounds.y_max - Global.GRID_SIZE)
-	# Make so spawn on grid pt.
-	spawn_point.x = floorf(spawn_point.x / Global.GRID_SIZE) * Global.GRID_SIZE
-	spawn_point.y = floorf(spawn_point.y / Global.GRID_SIZE) * Global.GRID_SIZE
+	# Intersect snake parts with possible points in grid
+	# to avoid spawning food on self
+	var set_snake_pos = Set.new()
+	for part in body.snake_parts:
+		set_snake_pos.add(part.last_position)
+	var spawn_point: Vector2 = (
+		bounds.pos_grid
+		.difference(set_snake_pos)
+		.elements()
+		.pick_random()
+	)
+	
+	if spawn_point == null:
+		# TODO: No valid spawn point.
+		pass
+	
 	# What do we spawn? (instantiating)
 	var food = food_scene.instantiate()
 	food.position = spawn_point

@@ -10,6 +10,7 @@ var x_min: float
 var x_max: float
 var y_min: float
 var y_max: float
+var pos_grid: Set = Set.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -18,6 +19,15 @@ func _ready() -> void:
 	y_min = upper_left.position.y
 	# Hmm. Still difficult to wrap my head around
 	y_max = lower_right.position.y
+	
+	# Store grid coordinates in set
+	var fgrid_size = float(Global.GRID_SIZE)
+	for x in range(x_min, x_max):
+		for y in range(y_min, y_max):
+			var x_norm = floorf(x / fgrid_size) * Global.GRID_SIZE
+			var y_norm = floorf(y / fgrid_size) * Global.GRID_SIZE
+			pos_grid.add(Vector2(x_norm, y_norm))
+
 
 func wrap_vector(v: Vector2) -> Vector2:
 	if v.x < x_min:

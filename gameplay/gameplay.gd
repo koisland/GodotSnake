@@ -4,16 +4,13 @@ class_name Gameplay extends Node2D
 @onready var head: Head = %Head
 @onready var bounds: Bounds = %Bounds
 @onready var spawner: Spawner = $Spawner
-
+@onready var body: Body = %Body
 
 var time_between_moves: float = 1000.0
 var time_since_last_move: float = 0.0
 var speed: float = 10000.0
 var dt_speed: float = 500.0
 var move_dir: Vector2 = Vector2.RIGHT
-# Godot allows mixed types but lose auto-completion
-var snake_parts: Array[SnakePart] = []
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -23,7 +20,7 @@ func _ready() -> void:
 	# First food.
 	spawner.spawn_food()
 	
-	snake_parts.push_back(head)
+	body.snake_parts.push_back(head)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -58,20 +55,20 @@ func update_snake():
 	
 	# Iterate thru each part after head
 	# Move to last position of previous part.
-	for i in range(1, snake_parts.size(), 1):
-		snake_parts[i].move_to(snake_parts[i-1].last_position)
+	for i in range(1, body.snake_parts.size(), 1):
+		body.snake_parts[i].move_to(body.snake_parts[i-1].last_position)
 
 func _on_food_eaten():
 	# spawn food.
 	spawner.call_deferred("spawn_food")
 	# add tail
-	spawner.call_deferred("spawn_tail", snake_parts[snake_parts.size() - 1].last_position)
+	spawner.call_deferred("spawn_tail", body.snake_parts[body.snake_parts.size() - 1].last_position)
 	# increase speed
 	speed += dt_speed
 	# keep score
 
 func _on_tail_added(tail: Tail):
-	snake_parts.push_back(tail)
+	body.snake_parts.push_back(tail)
 
 func _on_tail_collided():
 	print("Game over man")
