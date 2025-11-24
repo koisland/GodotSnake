@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Snek"
-run/main_scene="uid://dofe60ipteuva"
+run/main_scene="uid://d0fdkjtswhopi"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 

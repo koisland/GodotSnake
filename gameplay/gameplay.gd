@@ -1,5 +1,10 @@
 class_name Gameplay extends Node2D
 
+const game_over_scene: PackedScene = preload("res://menus/game_over.tscn")
+const pause_scene: PackedScene = preload("res://menus/pause_menu.tscn")
+var game_over_menu: GameOverMenu
+var pause_menu: PauseMenu
+
 # Access as unique name, so don't break references if moved around
 @onready var head: Head = %Head
 @onready var bounds: Bounds = %Bounds
@@ -11,6 +16,7 @@ var time_since_last_move: float = 0.0
 var speed: float = 10000.0
 var dt_speed: float = 500.0
 var move_dir: Vector2 = Vector2.RIGHT
+var score: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -25,18 +31,27 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	var new_dir: Vector2 = Vector2.ZERO
 	# (x, y)
 	# y goes positively in down direction
 	# Remember to map WASD via Project > Project Settings > Input Map > ui_*
 	if Input.is_action_pressed("ui_up"):
-		move_dir = Vector2.UP
+		new_dir = Vector2.UP # (0, -1)
 	elif Input.is_action_pressed("ui_down"):
-		move_dir = Vector2.DOWN
+		new_dir = Vector2.DOWN # (0, 1)
 	elif Input.is_action_pressed("ui_left"):
-		move_dir = Vector2.LEFT
+		new_dir = Vector2.LEFT # (1, 0)
 	elif Input.is_action_pressed("ui_right"):
-		move_dir = Vector2.RIGHT
+		new_dir = Vector2.RIGHT # (-1, 0)
 
+	# Don't allow moving backward
+	# 2nd condition so if no button pressed, resume previous direction.
+	if new_dir + move_dir != Vector2.ZERO and new_dir != Vector2.ZERO:
+		move_dir = new_dir
+		
+	if Input.is_action_just_pressed("ui_cancel"):
+		pause_game()
+		
 # Snake is Area2d (phyx obj) so update in physics_process_loop
 func _physics_process(delta: float) -> void:
 	# So as time passes (delta), time_since_last move increases based on set speed
@@ -66,9 +81,22 @@ func _on_food_eaten():
 	# increase speed
 	speed += dt_speed
 	# keep score
+	score += 1
 
 func _on_tail_added(tail: Tail):
 	body.snake_parts.push_back(tail)
 
 func _on_tail_collided():
-	print("Game over man")
+	if not game_over_menu:
+		game_over_menu = game_over_scene.instantiate() as GameOverMenu
+		add_child(game_over_menu)
+		game_over_menu.set_score(score)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		pause_game()
+
+func pause_game():
+	if not pause_menu:
+		pause_menu = pause_scene.instantiate() as PauseMenu
+		add_child(pause_menu)
