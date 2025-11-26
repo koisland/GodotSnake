@@ -7,10 +7,9 @@ class_name StartMenu extends CanvasLayer
 const gameplay_scene: PackedScene = preload("res://gameplay/gameplay.tscn")
 
 func _ready() -> void:
-	# TODO: Set high score
-	var high_score: int = 0
+	var high_score: int = Global.save_data.high_score
 	score.text = "High Score: " + str(high_score)
-
+	
 
 func _on_start_button_pressed() -> void:
 	# Change scene to packed to replace with new gameplayscene

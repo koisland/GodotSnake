@@ -2,32 +2,41 @@ class_name Gameplay extends Node2D
 
 const game_over_scene: PackedScene = preload("res://menus/game_over.tscn")
 const pause_scene: PackedScene = preload("res://menus/pause_menu.tscn")
-var game_over_menu: GameOverMenu
-var pause_menu: PauseMenu
 
 # Access as unique name, so don't break references if moved around
 @onready var head: Head = %Head
 @onready var bounds: Bounds = %Bounds
 @onready var spawner: Spawner = $Spawner
 @onready var body: Body = %Body
+@onready var hud: HUD = $HUD
 
 var time_between_moves: float = 1000.0
 var time_since_last_move: float = 0.0
-var speed: float = 10000.0
+var speed: float = 5000.0
 var dt_speed: float = 500.0
 var move_dir: Vector2 = Vector2.RIGHT
-var score: int = 0
+# Useful if need to provide different scoring for items.
+var score: int:
+	get:
+		return score
+	set(value):
+		score = value
+		hud.update_score(value)
+var game_over_menu: GameOverMenu
+var pause_menu: PauseMenu
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# Attach signals
 	head.food_eaten.connect(_on_food_eaten)
 	head.collided_with_tail.connect(_on_tail_collided)
 	spawner.tail_added.connect(_on_tail_added)
+	# Force snake to move instead of waiting one full tick.
+	time_since_last_move = time_between_moves
 	# First food.
 	spawner.spawn_food()
-	
+	# Add head of snake
 	body.snake_parts.push_back(head)
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
