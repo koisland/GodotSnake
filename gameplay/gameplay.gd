@@ -22,6 +22,12 @@ var score: int:
 	set(value):
 		score = value
 		hud.update_score(value)
+var lives: int = 3:
+	get:
+		return lives
+	set(value):
+		lives = max(value, 0)
+		hud.update_hearts(lives)
 var game_over_menu: GameOverMenu
 var pause_menu: PauseMenu
 
@@ -96,7 +102,8 @@ func _on_tail_added(tail: Tail):
 	body.snake_parts.push_back(tail)
 
 func _on_tail_collided():
-	if not game_over_menu:
+	lives -= 1
+	if lives == 0 && not game_over_menu:
 		game_over_menu = game_over_scene.instantiate() as GameOverMenu
 		add_child(game_over_menu)
 		game_over_menu.set_score(score)

@@ -1,6 +1,29 @@
-[gd_scene load_steps=2 format=3 uid="uid://cpm4nddkgc7qi"]
+[gd_scene load_steps=6 format=3 uid="uid://cpm4nddkgc7qi"]
 
 [ext_resource type="Script" uid="uid://337sn467ksmf" path="res://menus/hud.gd" id="1_633jc"]
+[ext_resource type="Texture2D" uid="uid://yx3nyvc18m7s" path="res://gameplay/sprites/heart_animated_1.png" id="2_rglhv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jew8s"]
+atlas = ExtResource("2_rglhv")
+region = Rect2(0, 0, 17, 17)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pua1y"]
+atlas = ExtResource("2_rglhv")
+region = Rect2(68, 0, 17, 17)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d51vb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jew8s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pua1y")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_633jc")
@@ -17,6 +40,30 @@ anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
 alignment = 2
+
+[node name="Hearts" type="GridContainer" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 4
+columns = 3
+
+[node name="H1" type="AnimatedSprite2D" parent="Panel/HBoxContainer/Hearts"]
+unique_name_in_owner = true
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_d51vb")
+offset = Vector2(15, 2.5)
+
+[node name="H2" type="AnimatedSprite2D" parent="Panel/HBoxContainer/Hearts"]
+unique_name_in_owner = true
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_d51vb")
+offset = Vector2(35, 2.5)
+
+[node name="H3" type="AnimatedSprite2D" parent="Panel/HBoxContainer/Hearts"]
+unique_name_in_owner = true
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_d51vb")
+offset = Vector2(55, 2.5)
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer"]
 layout_mode = 2
